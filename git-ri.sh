@@ -2,4 +2,5 @@
 
 set -euo pipefail
 
-git select-commit | xargs printf "%s^1" | xargs git rebase -i
+commit=$(git select-commit) || exit 1
+printf "%s^1" "$commit" | xargs -o git rebase -i

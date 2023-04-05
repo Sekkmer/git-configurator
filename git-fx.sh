@@ -2,4 +2,5 @@
 
 set -euo pipefail
 
-git select-commit | xargs git commit --fixup
+commit=$(git select-commit) || exit 1
+git commit --fixup "$commit"
