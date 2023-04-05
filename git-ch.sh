@@ -25,7 +25,7 @@ fi
 git checkout "$branch_to_checkout"
 
 if echo "$branch_to_checkout" | grep -q "^feature/"; then
-	git pull --rebase
-else
 	git pull
+else
+	git pull --rebase
 fi
