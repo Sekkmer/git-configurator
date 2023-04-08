@@ -1,0 +1,1 @@
+reflog show --color=always --pretty=format:"%C(auto)%h %C(bold magenta)%gd%C(auto)%d %gs %C(reset)| %C(dim green)(%an) %C(black)%C(bold)%cr"
