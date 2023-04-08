@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -39,7 +39,7 @@ for entry in "$SCRIPT_DIR"/*; do
 			alias_name="${alias_name%.*}"
 			alias_value="!$entry"
 		else
-			line_count=$(wc -l < "$entry")
+			line_count=$(wc -l <"$entry")
 			if [ "$line_count" -eq 1 ]; then
 				alias_value=$(head -n 1 "$entry")
 			else

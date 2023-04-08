@@ -16,18 +16,18 @@ else
 	drop="drop"
 fi
 
-case "${1:-}" in
-	e|edit|-e|--edit)
-		export GIT_SEQUENCE_EDITOR="sed -i '1s/^/$pick /$edit /'"
+case "${1-}" in
+e | edit | -e | --edit)
+	export GIT_SEQUENCE_EDITOR="sed -i '1s/^/$pick /$edit /'"
 	;;
-	r|reword|-r|--reword)
-		export GIT_SEQUENCE_EDITOR="sed -i '1s/^/$pick /$reword /'"
+r | reword | -r | --reword)
+	export GIT_SEQUENCE_EDITOR="sed -i '1s/^/$pick /$reword /'"
 	;;
-	d|drop|-d|--drop)
-		export GIT_SEQUENCE_EDITOR="sed -i '1s/^/$pick /$drop /'"
+d | drop | -d | --drop)
+	export GIT_SEQUENCE_EDITOR="sed -i '1s/^/$pick /$drop /'"
 	;;
-	*)
-		# No-op
+*)
+	# No-op
 	;;
 esac
 
