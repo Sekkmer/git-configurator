@@ -31,5 +31,5 @@ d | drop | -d | --drop)
 	;;
 esac
 
-commit=$(git select-commit) || exit 1
+commit=$(git select-commit --grep="^fixup\!\|^squash\!" --invert-grep) || exit 1
 printf "%s^1" "$commit" | xargs -o git rebase -i
