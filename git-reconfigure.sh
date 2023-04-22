@@ -25,6 +25,30 @@ function set_git_alias() {
 	fi
 }
 
+while [[ $# -gt 0 ]]; do
+	KEY="$1"
+	shift
+	case "$KEY" in
+	--) ;; # -h|--help is eaten by git itself if it's the first argument
+	-p | --pull)
+		git -C "$SCRIPT_DIR" pull --rebase
+		;;
+	-h | --help)
+		echo "Usage: git-reconfigure.sh [OPTIONS]"
+		echo "Reconfigure git aliases"
+		echo ""
+		echo "Options:"
+		echo "  --help, -h  Show this help message and exit"
+		echo "  --pull, -p  Pull the latest changes from the repository"
+		exit 0
+		;;
+	*)
+		echo -e "${RED}Error:${NC} Unknown option: $KEY"
+		exit 1
+		;;
+	esac
+done
+
 for entry in "$SCRIPT_DIR"/*; do
 	filename="$(basename "$entry")"
 
