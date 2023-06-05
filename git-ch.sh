@@ -44,7 +44,7 @@ if [ -n "$changes" ]; then
 	esac
 fi
 
-git checkout "$branch_to_checkout" "${checkout_args[@]-}"
+git checkout "$branch_to_checkout" "${checkout_args[@]}"
 
 if echo "$branch_to_checkout" | grep -q "^feature/"; then
 	git pull
