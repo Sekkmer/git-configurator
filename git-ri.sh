@@ -2,25 +2,12 @@
 
 set -euo pipefail
 
-abbreviateCommands=$(git config --get rebase.abbreviateCommands || true)
-
-if [ "$abbreviateCommands" = "true" ]; then
-	pick="p"
-	edit="e"
-	reword="r"
-	drop="d"
-else
-	pick="pick"
-	edit="edit"
-	reword="reword"
-	drop="drop"
-fi
-
 function auto_rebase() {
 	earliest_target_hash=""
 	earliest_target_timestamp=""
+	fixup_commits="$(git log --pretty=oneline --abbrev-commit --grep="^fixup\!\|^squash\!" --all)"
 
-	for line in git log --pretty=oneline --abbrev-commit --grep="^fixup\!\|^squash\!" --all; do
+	while read -r line; do
 		commit_hash=$(echo "$line" | awk '{print $1}')
 		commit_msg=$(echo "$line" | awk '{$1=""; print $0}')
 
@@ -37,23 +24,31 @@ function auto_rebase() {
 				earliest_target_timestamp="$current_target_timestamp"
 			fi
 		fi
-	done
+	done <<<"$fixup_commits"
 
 	echo "$earliest_target_hash"
 }
 
 case "${1-}" in
-e | edit | -e | --edit)
-	export GIT_SEQUENCE_EDITOR="sed -i -e '1s/^/$pick /$edit /'"
+-e | --edit)
+	export GIT_SEQUENCE_EDITOR="sed -i -e '1s/^\(p\|pick\) /edit /'"
+	shift
 	;;
-r | reword | -r | --reword)
-	export GIT_SEQUENCE_EDITOR="sed -i -e '1s/^/$pick /$reword /'"
+-r | --reword)
+	export GIT_SEQUENCE_EDITOR="sed -i -e '1s/^\(p\|pick\) /reword /'"
+	shift
 	;;
-d | drop | -d | --drop)
-	export GIT_SEQUENCE_EDITOR="sed -i -e '1s/^/$pick /$drop /'"
+-d | --drop)
+	export GIT_SEQUENCE_EDITOR="sed -i -e '1s/^\(p\|pick\) /drop /'"
+	shift
 	;;
-a | auto | -a | --auto)
-	printf "%s^1" "$(auto_rebase)" | xargs -o git rebase -i
+-b | --break)
+	export GIT_SEQUENCE_EDITOR="sed -i '1i\\break'"
+	shift
+	;;
+-a | --auto)
+	shift
+	printf "%s^1" "$(auto_rebase)" | xargs -o git rebase -i "$@"
 	exit 0
 	;;
 *)
@@ -62,4 +57,4 @@ a | auto | -a | --auto)
 esac
 
 commit=$(git select-commit --grep="^fixup\!\|^squash\!" --invert-grep) || exit 1
-printf "%s^1" "$commit" | xargs -o git rebase -i
+printf "%s^1" "$commit" | xargs -o git rebase -i "$@"
