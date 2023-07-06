@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-git fetch --prune --no-tags --no-recurse-submodules --quiet
+git fetch --prune --no-tags --quiet
 
 remote_branches="$(git for-each-ref --format='%(refname:short)' refs/remotes/origin | grep -vE 'origin$')"
 local_branches="$(git for-each-ref --format='%(refname:short)' refs/heads)"
