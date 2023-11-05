@@ -1,1 +1,0 @@
-log --graph --color=always --format="%C(auto)%h%d %C(reset)%s %C(dim green)(%an) %C(black)%C(bold)%cr"

@@ -2,6 +2,15 @@
 
 set -euo pipefail
 
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+
+if [ -s "$script_dir/.env" ]; then
+	source "$script_dir/.env"
+fi
+
+export GIT_LOG_GRAPH_TRESHOLD="${GIT_LOG_GRAPH_TRESHOLD:-10000}"
+export GIT_LOG_NO_GRAPH="${GIT_LOG_NO_GRAPH:-}"
+
 function check_staged_changes() {
 	while git diff --cached --quiet --exit-code; do
 		echo "No staged changes in the repository."
@@ -23,4 +32,25 @@ function check_staged_changes() {
 			;;
 		esac
 	done
+}
+
+function should_use_log_graph() {
+	local arg
+	for arg in "$@"; do
+		if [[ "$arg" == "--graph" ]]; then
+			return 1
+		fi
+		if [[ "$arg" == "--no-graph" ]]; then
+			return 0
+		fi
+	done
+	if [ -n "${GIT_LOG_NO_GRAPH-}" ]; then
+		return 0
+	fi
+	local commit_count
+	commit_count=$(git rev-list --count HEAD)
+	if [ "$commit_count" -gt "$GIT_LOG_GRAPH_TRESHOLD" ]; then
+		return 0
+	fi
+	return 1
 }
