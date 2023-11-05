@@ -13,7 +13,8 @@ function set_git_alias() {
 	local alias_name=$1
 	local alias_value=$2
 
-	local current_alias=$(git config --global --get-all alias.$alias_name)
+	local current_alias
+	current_alias=$(git config --global --get-all alias.$alias_name)
 
 	if [[ -z "$current_alias" ]]; then
 		git config --global alias.$alias_name "$alias_value"
