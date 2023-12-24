@@ -32,7 +32,9 @@ while [[ $# -gt 0 ]]; do
 	case "$KEY" in
 	--) ;; # -h|--help is eaten by git itself if it's the first argument
 	-p | --pull)
-		git -C "$SCRIPT_DIR" pull --rebase
+		cd "$SCRIPT_DIR"
+		git pull --rebase
+		exit 0
 		;;
 	-h | --help)
 		echo "Usage: git-reconfigure.sh [OPTIONS]"
