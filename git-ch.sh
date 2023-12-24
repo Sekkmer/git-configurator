@@ -3,9 +3,27 @@
 set -euo pipefail
 
 search_query="${1:-}"
-matching_branches=$(git branch --list "*$search_query*")
-branch_count=$(echo "$matching_branches" | wc -l)
-branch_to_checkout=$(if [ "$branch_count" -eq 1 ]; then echo "$matching_branches"; else echo "$matching_branches" | sk | tr -d "[:space:]"; fi)
+matching_branches=$(git for-each-ref --format='%(refname:short)' refs/heads | grep -E "$search_query" || true)
+
+case "$(echo "$matching_branches" | wc -l)" in
+0) ;;
+1)
+	branch_to_checkout="$matching_branches"
+	;;
+*)
+	branch_to_checkout=$(echo "$matching_branches" | sk --ansi --no-sort --reverse --print-query --expect=ctrl-d | tail -1)
+	;;
+esac
+
+if [ -z "$branch_to_checkout" ]; then
+	echo "No branch selected"
+	exit 1
+fi
+
+if [ "$branch_to_checkout" = "$(git rev-parse --abbrev-ref HEAD)" ]; then
+	echo "Already on branch $branch_to_checkout"
+	exit 0
+fi
 
 changes=$(git status --porcelain)
 
