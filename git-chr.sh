@@ -11,7 +11,7 @@ if [ -n "${local_branches}" ]; then
 	remote_branches="$(echo "${remote_branches}" | grep -vE "${local_branches}")"
 fi
 
-branch="$(echo "${local_branches}${remote_branches}" | sk --ansi --no-sort --reverse --print-query --expect=ctrl-d | tail -1 | tr -d '[:space:]')"
+branch="$(echo "${remote_branches}" | sk --ansi --no-sort --reverse --print-query --expect=ctrl-d | tail -1 | tr -d '[:space:]')"
 
 if [ -z "${branch}" ]; then
 	echo "No branch selected"
