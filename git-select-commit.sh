@@ -6,9 +6,8 @@ script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 source "$script_dir/include.sh"
 
 args=()
-if should_use_log_graph "$@"; then
-	args+=("--graph")
-fi
+args+=("--graph")
+args+=("--max-count=1000")
 
 git log "${args[@]}" --color=always --format="%C(auto)%h%d %s %C(green)(%an) %C(reset)%C(black bold)%cr" "$@" |
 	sk --ansi --no-sort --reverse --print-query --expect=ctrl-d \
