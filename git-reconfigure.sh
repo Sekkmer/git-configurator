@@ -34,7 +34,6 @@ while [[ $# -gt 0 ]]; do
 	-p | --pull)
 		cd "$SCRIPT_DIR"
 		git pull --rebase
-		exit 0
 		;;
 	-h | --help)
 		echo "Usage: git-reconfigure.sh [OPTIONS]"
