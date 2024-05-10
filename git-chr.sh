@@ -2,6 +2,9 @@
 
 set -euo pipefail
 
+script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+source "$script_dir/include.sh"
+
 git fetch --prune --no-tags --quiet
 
 local_branches="$(git for-each-ref --format='%(refname:short)' refs/heads)"
@@ -18,4 +21,4 @@ if [ -z "${branch}" ]; then
 	exit 1
 fi
 
-git checkout "${branch}" "$@"
+git checkout "${CHECKOUT_ARGS[@]}" "${branch}" "$@"

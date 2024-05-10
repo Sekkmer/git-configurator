@@ -14,6 +14,12 @@ else
 	export REBASE_ARGS=()
 fi
 
+if [ -n "${CHECKOUT_ARGS:-}" ]; then
+	export CHECKOUT_ARGS
+else
+	export CHECKOUT_ARGS=()
+fi
+
 export GIT_LOG_GRAPH_TRESHOLD="${GIT_LOG_GRAPH_TRESHOLD:-10000}"
 export GIT_LOG_NO_GRAPH="${GIT_LOG_NO_GRAPH:-}"
 
@@ -39,3 +45,22 @@ function check_staged_changes() {
 		esac
 	done
 }
+
+function load_config()
+{
+	local result=''
+
+	result="$(git config --get reconfigure.rebase-args || true)"
+	for arg in $result; do
+		REBASE_ARGS+=("$arg")
+	done
+	export REBASE_ARGS
+
+	result="$(git config --get reconfigure.checkout-args || true)"
+	for arg in $result; do
+		CHECKOUT_ARGS+=("$arg")
+	done
+	export CHECKOUT_ARGS
+}
+
+load_config

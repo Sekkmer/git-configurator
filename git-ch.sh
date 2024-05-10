@@ -2,6 +2,9 @@
 
 set -euo pipefail
 
+script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+source "$script_dir/include.sh"
+
 search_query="${1:-}"
 matching_branches=$(git for-each-ref --format='%(refname:short)' refs/heads | grep -E "$search_query" || true)
 
@@ -62,7 +65,7 @@ if [ -n "$changes" ]; then
 	esac
 fi
 
-git checkout "$branch_to_checkout" "${checkout_args[@]}"
+git checkout "${CHECKOUT_ARGS[@]}" "$branch_to_checkout" "${checkout_args[@]}"
 
 if echo "$branch_to_checkout" | grep -q "^feature/"; then
 	git pull
