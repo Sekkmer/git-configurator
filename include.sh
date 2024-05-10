@@ -8,7 +8,12 @@ if [ -s "$script_dir/.env" ]; then
 	source "$script_dir/.env"
 fi
 
-export REBASE_ARGS=("${REBASE_ARGS[@]:-}")
+if [ -n "${REBASE_ARGS:-}" ]; then
+	export REBASE_ARGS
+else
+	export REBASE_ARGS=()
+fi
+
 export GIT_LOG_GRAPH_TRESHOLD="${GIT_LOG_GRAPH_TRESHOLD:-10000}"
 export GIT_LOG_NO_GRAPH="${GIT_LOG_NO_GRAPH:-}"
 
