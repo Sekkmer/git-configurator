@@ -14,7 +14,7 @@ if [ -n "${local_branches}" ]; then
 	remote_branches="$(echo "${remote_branches}" | grep -vE "${local_branches}")"
 fi
 
-if [ -n "${CHR_IGNORE}" ]; then
+if [ -n "${CHR_IGNORE:-}" ]; then
 	remote_branches="$(echo "${remote_branches}" | grep -vE "${CHR_IGNORE}")"
 fi
 
