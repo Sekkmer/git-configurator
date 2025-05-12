@@ -26,6 +26,27 @@ function set_git_alias() {
 	fi
 }
 
+function apply_default_config() {
+	local force='false'
+	if [[ "${1:-}" == "force" ]]; then
+		force='true'
+	fi
+
+	if ! command -v yq >/dev/null 2>&1; then
+		echo -e "${YELLOW}Skipping defaults:${NC} yq not installed"
+		return
+	fi
+
+	while IFS=$'\t' read -r key value; do
+		if [[ "$force" == "true" ]] || ! git config --global --get "$key" >/dev/null 2>&1; then
+			git config --global "$key" "$value"
+			echo -e "${GREEN}Set:${NC} $key = $value"
+		else
+			echo -e "${YELLOW}Skipping:${NC} $key already set"
+		fi
+	done < <(yq --input-format toml eval -o=tsv '.. | select(tag != "!!map" and tag != "!!seq") | [path | join("."), .] | @tsv' "$SCRIPT_DIR/config.toml")
+}
+
 while [[ $# -gt 0 ]]; do
 	KEY="$1"
 	shift
@@ -35,13 +56,18 @@ while [[ $# -gt 0 ]]; do
 		cd "$SCRIPT_DIR"
 		git pull --rebase
 		;;
+	-c | --config)
+		apply_default_config "$@"
+		exit 0
+		;;
 	-h | --help)
 		echo "Usage: git-reconfigure.sh [OPTIONS]"
 		echo "Reconfigure git aliases"
 		echo ""
 		echo "Options:"
-		echo "  --help, -h  Show this help message and exit"
-		echo "  --pull, -p  Pull the latest changes from the repository"
+		echo "  -h, --help    Show this help message and exit"
+		echo "  -p, --pull    Pull the latest changes from the repository"
+		echo "  -c, --config  Apply default configuration from config.toml"
 		exit 0
 		;;
 	*)

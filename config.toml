@@ -1,0 +1,60 @@
+
+[branch]
+sort = "-committerdate"
+
+[tag]
+sort = "version:refname"
+
+[fetch]
+prune = true
+recurseSubmodules = true
+all = true
+
+[pull]
+ff = "only"
+rebase = true
+
+[rebase]
+autoSquash = true
+autoStash = true
+abbreviateCommands = true
+updateRefs = true
+
+[submodule]
+recurse = true
+fetchJobs = 8
+
+[diff]
+algorithm = "histogram"
+colorMoved = "dimmed-zebra"
+mnemonicPrefix = true
+renames = true
+indentHeuristic = true
+compactionHeuristic = true
+colorMovedWS = "allow-indicator"
+submodule = "log"
+
+[merge]
+conflictStyle = "zdiff3"
+
+[rerere]
+enabled = true
+autoUpdate = true
+
+[extensions]
+worktreeConfig = true
+
+[core]
+editor = "nvim"
+pager = "less -+F -+X -R -S"
+trustctime = false
+fsmonitor = true
+
+[status]
+submoduleSummary = true
+showStash = true
+
+[maintenance]
+auto = true
+autoCommitGraph = true
+autoLooseObjects = true
