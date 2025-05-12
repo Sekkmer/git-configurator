@@ -20,6 +20,12 @@ else
 	export CHECKOUT_ARGS=()
 fi
 
+if [ -n "${WORKTREE_BASE_PATH:-}" ]; then
+	export WORKTREE_BASE_PATH
+else
+	export WORKTREE_BASE_PATH="$HOME/git/worktrees"
+fi
+
 export GIT_LOG_GRAPH_TRESHOLD="${GIT_LOG_GRAPH_TRESHOLD:-10000}"
 export GIT_LOG_NO_GRAPH="${GIT_LOG_NO_GRAPH:-}"
 
@@ -46,8 +52,7 @@ function check_staged_changes() {
 	done
 }
 
-function load_config()
-{
+function load_config() {
 	local result=''
 
 	result="$(git config --get reconfigure.rebase-args || true)"
@@ -61,6 +66,12 @@ function load_config()
 		CHECKOUT_ARGS+=("$arg")
 	done
 	export CHECKOUT_ARGS
+
+	result="$(git config --get reconfigure.worktree-base-path || true)"
+	if [ -n "$result" ]; then
+		WORKTREE_BASE_PATH="$result"
+	fi
+	export WORKTREE_BASE_PATH
 }
 
 load_config
